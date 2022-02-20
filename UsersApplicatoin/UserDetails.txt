@@ -1,0 +1,60 @@
+﻿using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Script.Serialization;
+using System.Web.Script.Services;
+using System.Web.Services;
+
+namespace UsersApplicatoin
+{
+    [WebService(Namespace = "https://localhost:44388/")]
+    [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
+    [System.ComponentModel.ToolboxItem(false)]
+    [ScriptService]
+    public class StoreUserDetails : System.Web.Services.WebService
+    {
+
+        [WebMethod]
+        public void StorUserDetails(String SignUpName, String SignUpPswd, String SignUpEmail)
+        {
+
+            
+                UsersDetails UsrDtls = new UsersDetails();
+                UsrDtls.StorUserDetails(SignUpName, SignUpPswd, SignUpEmail);
+
+        }
+        [WebMethod]
+        public void DisplayUserDetails(String SignInEmail, string SignInPswd)
+        {
+
+            UsersDetails uds = new UsersDetails();
+            string connectionString = "server=localhost;database=test_data2;Uid=sandc_db;Pwd=Sandc@123;";
+            string queryString = "SELECT* From railsfivesample Where emailid = '" + SignInEmail + "' ";
+            using (MySqlConnection con = new MySqlConnection(connectionString))
+            {
+
+
+                MySqlCommand cmd = new MySqlCommand(queryString, con);
+                MySqlParameter param = new MySqlParameter();
+                param.ParameterName = "@emailid";
+                param.Value = SignInEmail;
+
+                cmd.Parameters.Add(param);
+                con.Open();
+                MySqlDataReader dr = cmd.ExecuteReader();
+                while (dr.Read())
+                {
+
+                    uds.FirstName = dr["firstname"].ToString();
+                   
+                   
+                }
+            }
+            JavaScriptSerializer js = new JavaScriptSerializer();
+            Context.Response.Write(js.Serialize(uds));
+        }
+    }
+    }
+

@@ -1,0 +1,115 @@
+﻿$(document).ready(function () {
+    
+    
+    $("#SignUpBtn").click(function () {
+        var SignUpName = $("#SignUpName").val();
+        var SignUpEmail = $("#SignUpEmail").val();
+        var SignUpPswd = $("#SignUpPswd").val();
+        var SignUpCnfPswd = $("#SignUpCnfPswd").val();
+
+        if (SignUpName == "" && SignUpEmail == "" && SignUpPswd == "" && SignUpCnfPswd == "") {
+            var divhtml = "";
+            divhtml += "<div class='alert alert-danger'>";
+            divhtml += "<button class='close' type='button' data-dismiss='alert'>x</button>";
+            divhtml += "<p>2 errors prohibited this user from being saved:<p>";
+            divhtml += "<ul>";
+            divhtml += "<li>Name Can't be blank</li>";
+            divhtml += "<li>Email Can't be blank</li>";
+            divhtml += "</ul>";
+            divhtml += "</div > ";
+            $("#alert1").html(divhtml);
+        }
+        else if (SignUpName == null || SignUpName == "" || SignUpName === "undefined") {
+            var divhtml = "";
+            divhtml += "<div class='alert alert-danger'>";
+            divhtml += "<button class='close' type='button' data-dismiss='alert'>x</button>";
+            divhtml += "<p>1 errors prohibited this user from being saved:<p>";
+            divhtml += "<ul>";
+            divhtml += "<li>Name Can't be blank</li>";
+            divhtml += "</ul>";
+            divhtml += "</div > ";
+            $("#alert1").html(divhtml);
+
+        }
+        else if (SignUpEmail == null || SignUpEmail == "" || SignUpEmail === "undefined") {
+            var divhtml = "";
+            divhtml += "<div class='alert alert-danger'>";
+            divhtml += "<button class='close' type='button' data-dismiss='alert'>x</button>";
+            divhtml += "<p>1 errors prohibited this user from being saved:<p>";
+            divhtml += "<ul>";
+            divhtml += "<li>Email Can't be blank</li>";
+            divhtml += "</ul>";
+            divhtml += "</div > ";
+            $("#alert1").html(divhtml);
+
+        }
+        else if (SignUpPswd == null || SignUpPswd == "" || SignUpPswd === "undefined") {
+            var divhtml = "";
+            divhtml += "<div class='alert alert-danger'>";
+            divhtml += "<button class='close' type='button' data-dismiss='alert'>x</button>";
+            divhtml += "<p>1 errors prohibited this user from being saved:<p>";
+            divhtml += "<ul>";
+            divhtml += "<li>Password Can't be blank</li>";
+            divhtml += "</ul>";
+            divhtml += "</div > ";
+            $("#alert1").html(divhtml);
+        }
+        else if (SignUpCnfPswd !== SignUpPswd) {
+            var divhtml = "";
+            divhtml += "<div class='alert alert-danger'>";
+            divhtml += "<button class='close' type='button' data-dismiss='alert'>x</button>";
+            divhtml += "<p>1 errors prohibited this user from being saved:<p>";
+            divhtml += "<ul>";
+            divhtml += "<li>Password confirmation doesn't match Password</li>";
+            divhtml += "</ul>";
+            divhtml += "</div > ";
+            $("#alert1").html(divhtml);
+        }
+        else {
+            var userDetails = function () {
+                $.ajax({
+                    url: "UserDetails.asmx/StorUserDetails",
+                    type: 'POST',
+                    data: "{ 'SignUpName':' " + SignUpName + "', 'SignUpPswd': '" + SignUpPswd + "','SignUpEmail': '" + SignUpEmail + "' }",
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function () {
+                        location.href = "https://localhost:44388/HomePage"
+                    }
+                });
+
+            }
+            userDetails();
+        }
+
+    });
+    $("#SignInBtn").click(function () {
+
+        var SignInEmail = $("#SignInEmail").val();
+        var SignInPswd = $("#SignInPswd").val();
+        if (SignInEmail == "" || SignInPswd == "") {
+            var divhtml = "";
+            divhtml += "<div class='alert alert-success'>Invalid Email or Password";
+            divhtml += "<button class='close' type='button' data-dismiss='alert'>x</button>";
+            divhtml += "</div >";
+            $("#alert").html(divhtml);
+        }
+        else
+            var DispDetails = function (SignInEmail, SignInPswd) {
+                $.ajax({
+                    url: "UserDetails.asmx/DisplayUserDetails",
+                    type: 'POST',
+                    data: { SignInEmail: SignInEmail, SignInPswd: SignInPswd },
+                    dataType: 'json',
+                    success: function (data) {
+                      //  location.href = "https://localhost:44388/HomePage"
+                        var userHtml = "";
+                        userHtml += "<div style = 'color:white'><span><img src='Images/UserIcon.jpg' width='20px'/></span>" + data.FirstName + "</div>";
+                        $("#UserName").html(userHtml);
+
+                    }
+                });
+            }
+        DispDetails(SignInEmail, SignInPswd);
+    });
+});
